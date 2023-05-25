@@ -5,4 +5,5 @@ use (
 	./02Variables
 	./04conversion
 	./05mytime
+	./06array
 )
