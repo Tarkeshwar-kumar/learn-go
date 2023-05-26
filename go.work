@@ -7,4 +7,5 @@ use (
 	./05mytime
 	./06array
 	./09structs
+	./12differ
 )
