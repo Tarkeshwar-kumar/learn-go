@@ -12,13 +12,14 @@ var url = "http://www.google.com"
 func main() {
 	response, err := http.Get(url)
 	nilCheck(err)
-	
+
 	byteContent, err := ioutil.ReadAll(response.Body)
 	nilCheck(err)
 
 	createdFile, err_Creating_File := os.Create("./responseFile")
 	nilCheck(err_Creating_File)
 
+	fmt.Println(string(byteContent))
 	_, err_writting := io.WriteString(createdFile, string(byteContent))
 	nilCheck(err_writting)
 
