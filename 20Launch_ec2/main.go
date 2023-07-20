@@ -10,47 +10,36 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/ec2/types"
 )
 func main() {
-
 	ctx := context.Background()
-
 	InstanceId, err := CreateEC2(ctx, "ap-south-1")
-
 	if err != nil {
 		fmt.Println("Failed to create ec2 instance ")
 		fmt.Println(err.Error())
 		panic(err)
 	}
-
 	fmt.Println("Intsance id of created instance is ", InstanceId)
 }
 
 func CreateEC2(ctx context.Context, region string) (string, error) {
-
 	cfg, err := config.LoadDefaultConfig(ctx, config.WithRegion(region))
     if err != nil {
         return "", fmt.Errorf("unable to load SDK config, %v", err)
     }
-
 	ec2Client := ec2.NewFromConfig(cfg)
-
 	existingKeyPairs, err := ec2Client.DescribeKeyPairs(ctx, &ec2.DescribeKeyPairsInput{
 		KeyNames: []string{"go-aws-sdk"},
 	})
-
 	if err != nil && !strings.Contains(err.Error(), "InvalidKeyPair.NotFound") {
 		return "", fmt.Errorf("DescribeKeyPairs error: %s", err)
 	}
-
 	if existingKeyPairs == nil || len(existingKeyPairs.KeyPairs) == 0 {
 		_, err = ec2Client.CreateKeyPair(ctx, &ec2.CreateKeyPairInput{
 			KeyName: aws.String("go-aws-sdk"),
 		})
-	
 		if err != nil {
 			return "", fmt.Errorf("CreateKeyPair error, %v", err)
 		}
 	}
-
 	imageOutput, err := ec2Client.DescribeImages(ctx, &ec2.DescribeImagesInput{
 		Filters: []types.Filter{
 			{
@@ -64,11 +53,9 @@ func CreateEC2(ctx context.Context, region string) (string, error) {
 		},
 		Owners: []string{"099720109477"},
 	})
-	
 	if err != nil {
         return "", fmt.Errorf("DescribeImages error, %v", err)
     }
-
 	if len(imageOutput.Images) == 0 {
 		return "", fmt.Errorf("noo image found")
 	}
