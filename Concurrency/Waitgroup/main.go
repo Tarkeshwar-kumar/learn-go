@@ -5,18 +5,22 @@ import (
 	"sync"
 	"time"
 )
-
+// different ways to implement waitgroups and gorourtines in go
 func main() {
 	fmt.Println("Starting executing main function")
 	var wg sync.WaitGroup
-	wg.Add(4)
 	now := time.Now()
+	wg.Add(4)
 	go task1(&wg)  
-	go task2(&wg) 
-	go task3(&wg)
+	go func(){
+		defer wg.Done()
+		task2()
+	}()
+	go task3()
 	go task4(&wg)
-	wg.Wait()
-	fmt.Println("time elapsed in execution", time.Since(now))
+	defer wg.Wait()
+	defer fmt.Println("time elapsed in execution", time.Since(now))
+	defer wg.Done()
 	// not joining created fork
 	fmt.Println("Exiting main function")
 }
@@ -27,15 +31,13 @@ func task1(wg *sync.WaitGroup) {
 	fmt.Println("task1")
 }
 
-func task2(wg *sync.WaitGroup) {
+func task2() {
 	time.Sleep(300*time.Millisecond)
-	wg.Done()
 	fmt.Println("task2")
 }
 
-func task3(wg *sync.WaitGroup) {
+func task3() {
 	time.Sleep(200*time.Millisecond)
-	wg.Done()
 	fmt.Println("task3")
 }
 
