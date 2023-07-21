@@ -9,5 +9,6 @@ use (
 	./09structs
 	./12differ
 	./20Launch_ec2
+	./Concurrency/Waitgroup
 	./Concurrency/sync-tasks
 )
